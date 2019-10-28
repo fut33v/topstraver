@@ -14,3 +14,6 @@ webdriver download: https://chromedriver.chromium.org/downloads
 
 ## VK
 * add new Standalone app, authorize in it and get VK Token with scope=offline,photos,wall
+
+## Example output
+![strava club leaderbord](https://sun9-40.userapi.com/c855732/v855732050/11066f/Mn0IrY25sGg.jpg "strava club leaderbord")
