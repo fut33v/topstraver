@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
 	print (i)
 
-	if len(i) != 6:
+	if len(i) < 6:
 		exit(-1)
 
 	email = i[0]
@@ -75,10 +75,16 @@ if __name__ == "__main__":
 	vk_token = i[3]
 	vk_club_id = int(i[4])
 
+	if (len(i) > 6):
+		area = tuple( map(int, i[5].split(','))  )
+	else:
+		area = (340, 1153, 1180, 1903)
+
+	print("will be cropping to:", area)
+
 	scr_fname = "scr.png"
 
 	get_screenshot(email, password, club_id, scr_fname)
-	area = (340, 1153, 1180, 1903)
 	crop_image(scr_fname, scr_fname, area)
 
 	session = vk.Session(access_token=vk_token)
