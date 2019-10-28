@@ -3,12 +3,22 @@ from selenium import webdriver
 from PIL import ImageOps
 from PIL import Image
 
+import vk
+
+import sys
+import urllib.request
+import urllib.parse
+import base64
+import requests
+import json
+
 
 def get_screenshot(_email, _password, _club_id, _screenshot_file_name):
 	options = webdriver.ChromeOptions()
 	options.add_argument('--ignore-certificate-errors')
 	options.add_argument("--test-type")
 	options.add_argument("--headless")
+	options.add_argument("--lang=ru")
 	options.binary_location = "/usr/bin/chromium-browser"
 	driver = webdriver.Chrome(chrome_options=options)
 
@@ -55,16 +65,44 @@ if __name__ == "__main__":
 
 	print (i)
 
-	if len(i) != 4:
+	if len(i) != 6:
 		exit(-1)
 
 	email = i[0]
 	password = i[1]
 	club_id = i[2]
-	screenshot_file_name = "scr.png"
 
-	get_screenshot(email, password, club_id, screenshot_file_name)
+	vk_token = i[3]
+	vk_club_id = int(i[4])
+
+	scr_fname = "scr.png"
+
+	get_screenshot(email, password, club_id, scr_fname)
 	area = (340, 1153, 1180, 1903)
-	crop_image(screenshot_file_name,"scr.png", area)
+	crop_image(scr_fname, scr_fname, area)
 
+	session = vk.Session(access_token=vk_token)
+	vkapi = vk.API(session, v="5.35")
+	time.sleep(0.5)
+
+	data = vkapi.photos.getWallUploadServer(group_id=-vk_club_id)
+	DATA_UPLOAD_URL = data['upload_url']
+
+	r = requests.post(DATA_UPLOAD_URL, files={'photo': open(scr_fname,"rb")})
+	if r.status_code != requests.codes.ok:
+		print ("failed to POST photo!")
+		exit(-1)
+	params = {'server': r.json()['server'], 'photo': r.json()['photo'], 'hash': r.json()['hash'], 'group_id': -int(vk_club_id)}
+
+	wallphoto = vkapi.photos.saveWallPhoto(**params)
+	print(wallphoto)
+
+	photo_id = wallphoto[0]['id']
+	photo_owner = wallphoto[0]['owner_id']
+
+	params = {'attachments': 'photo' + str(photo_owner) + '_' + str(photo_id), 'message': '#накатали@53cycling'}
+	params['owner_id'] = vk_club_id
+	print(params)
+
+	vkapi.wall.post(**params)
 
