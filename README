@@ -1,0 +1,13 @@
+## topstraver
+take a screenshot of strava club leaderbord with selenium chrome webdriver
+
+dependencies: java, python selenium, webdriver, chromium, Pillow
+
+pip3 install Pillow selenium
+
+webdriver download: https://chromedriver.chromium.org/downloads
+(put it on $PATH)
+
+## usage: 
+* fill file with name 'input' like this: "email:password:club_id:"
+* python3 screenshot.py
