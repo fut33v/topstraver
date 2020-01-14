@@ -19,6 +19,9 @@ def get_screenshot(_email, _password, _club_id, _screenshot_file_name):
 	options.add_argument("--test-type")
 	options.add_argument("--headless")
 	options.add_argument("--lang=ru")
+	options.add_argument("--no-sandbox")
+	options.add_argument("--disable-dev-shm-usage")
+
 	options.binary_location = "/usr/bin/chromium-browser"
 	driver = webdriver.Chrome(chrome_options=options)
 
